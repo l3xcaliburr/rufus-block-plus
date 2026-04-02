@@ -1,0 +1,71 @@
+/* === Amazon Rufus Blocker v4 === */
+/* Strategy: keep the Rufus panel alive (cart lives inside it)    */
+/* but slide it off-screen and reclaim the body padding.          */
+/* Cart icon click slides it back in as a fixed overlay.          */
+
+/* 1. Reclaim body padding stolen by Rufus */
+body.rufus-docked-left,
+body[class*="rufus-docked"] {
+  padding-left: 12px !important;
+  --rufus-docked-panel-width: 0px !important;
+  --total-rufus-panel-full-width: 0px !important;
+  --total-rufus-panel-half-width: 0px !important;
+}
+
+/* 2. Slide the Rufus panel off-screen (keeps DOM alive for cart) */
+:not(body):not(html)[class*="rufus-docked-adjustable"],
+:not(body):not(html).rufus-docked-left:not(body) {
+  position: fixed !important;
+  left: -700px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 600px !important;
+  z-index: 100000 !important;
+  transition: left 0.25s ease !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  overflow-y: auto !important;
+}
+
+/* 3. When toggled open for the cart, slide in from left */
+:not(body):not(html)[class*="rufus-docked-adjustable"].rb-cart-open,
+:not(body):not(html).rufus-docked-left.rb-cart-open:not(body) {
+  left: 0 !important;
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* 4. Backdrop overlay when cart is open */
+#rb-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 99999;
+  cursor: pointer;
+}
+#rb-backdrop.rb-visible {
+  display: block;
+}
+
+/* 5. Hide Rufus AI chat UI inside the panel, keep ewc cart visible */
+/* Common Rufus chat selectors — these are the AI chatbot, not the cart */
+[class*="rufus-chat-interface"],
+[class*="rufus-conversation"],
+[class*="rufus-input"],
+[class*="rufus-prompt"],
+[class*="rufus-response"],
+[class*="rufus-message"],
+[class*="rufus-welcome"],
+[class*="rufus-suggestion"],
+[class*="rufus-header"]:not([class*="ewc"]),
+[class*="rufus-footer"]:not([class*="ewc"]),
+[id*="rufus-chat"],
+[id*="rufus-conversation"] {
+  display: none !important;
+}
+
+/* 6. Kill the animation meter bar */
+:not(body):not(html)[class*="rufus-animation"],
+:not(body):not(html)[class*="a-meter-animate"][class*="rufus"] {
+  display: none !important;
+}
